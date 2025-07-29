@@ -9,6 +9,7 @@ function processUserInput(input) {
   addHistory(input, reply);
 }
 
+function randomWhisper() {
   const whispers = [
     "Still listening...",
     "Whispers echo through silence.",
@@ -19,6 +20,7 @@ function processUserInput(input) {
   const w = whispers[Math.floor(Math.random() * whispers.length)];
   addMessage("bot", w);
   speakText(w);
+}
 
 function saveChatToMemory() {
   const chatBox = document.getElementById("chatBox");
@@ -26,7 +28,7 @@ function saveChatToMemory() {
     const html = chatBox.innerHTML;
     localStorage.setItem("invoke_memory", html);
   }
-
+}
 async function processUserInput(input) {
   const mood = detectEmotion(input);
   memory.mood = mood;
