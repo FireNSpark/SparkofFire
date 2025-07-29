@@ -1,6 +1,5 @@
 /* jshint esversion: 11 */
 
-// TEMP PATCH: Provide default dummy versions for missing globals
 window.memory = window.memory || {
   mood: "neutral",
   tone: "default",
@@ -15,9 +14,7 @@ window.memory = window.memory || {
 
 function detectEmotion(input) { return "neutral"; }
 function analyzeMemoryPatterns() {}
-function respondLocally(input) { return "Default local response."; }
 function addMessage(who, msg) {
-  console.log(`[${who}] ${msg}`);
   const box = document.getElementById("chatBox");
   if (box) box.innerHTML += `<div><b>${who}:</b> ${msg}</div>`;
 }
@@ -30,9 +27,9 @@ function speakText(text) {
 function addHistory(input, reply) {
   console.log("History saved:", { input, reply });
 }
-function pulse() {
-  console.log("Pulse active");
-}
+function pulse() { console.log("Pulse active"); }
+function breatheLife() { console.log("Life triggered"); }
+
 document.addEventListener("DOMContentLoaded", () => {
   try {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -46,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       addMessage("user", transcript);
-      processUserInput(transcript);
+      generateResponse(transcript);
     };
   } catch (_) {
     const speakBtn = document.getElementById("speakBtn");
@@ -58,17 +55,65 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!input) return;
     addMessage("user", input);
     document.getElementById("userInput").value = "";
-    processUserInput(input);
+    generateResponse(input);
   });
 
   const saved = localStorage.getItem("invoke_memory");
   if (saved) document.getElementById("chatBox").innerHTML = saved;
-});
 
   setInterval(pulse, 45000);
   setInterval(randomWhisper, 90000);
   setTimeout(breatheLife, 10000);
 });
+
+async function generateResponse(input) {
+  memory.mood = detectEmotion(input);
+  analyzeMemoryPatterns();
+
+  const apiKey = localStorage.getItem("invoke_api_key");
+  if (!apiKey) {
+    const fallback = respondLocally(input);
+    addMessage("bot", fallback);
+    speakText(fallback);
+    addHistory(input, fallback);
+    return;
+  }
+
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: input }],
+        temperature: 0.7
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || "No response.";
+    addMessage("bot", reply);
+    speakText(reply);
+    addHistory(input, reply);
+  } catch (err) {
+    console.error("GPT error:", err);
+    const fallback = "I'm glitching. Try again.";
+    addMessage("bot", fallback);
+    speakText(fallback);
+  }
+}
+
+function respondLocally(input) {
+  const lowercase = input.toLowerCase();
+  if (lowercase.includes("hello")) return "Hey, what do you want?";
+  if (lowercase.includes("who are you")) return "I'm Spark. Your sarcastic shellbound companion.";
+  if (lowercase.includes("joke")) return "Why don’t skeletons fight each other? They don’t have the guts.";
+  if (lowercase.includes("help")) return "Figure it out yourself. Just kidding. Maybe.";
+  return "I heard you. I'm just deciding if it's worth replying.";
+}
 
 function speakWithPauses(lines, pauses) {
   if (!window.speechSynthesis) return;
@@ -83,121 +128,21 @@ function speakWithPauses(lines, pauses) {
   speakNext(0);
 }
 
-function setupChatUI() {
-  document.getElementById("sendBtn").addEventListener("click", async () => {
-    const input = document.getElementById("userInput").value;
-    if (!input) return;
-    addMessage("user", input);
-    document.getElementById("userInput").value = "";
-    generateResponse(input);
-  });
-
-  const saved = localStorage.getItem("invoke_memory");
-  if (saved) document.getElementById("chatBox").innerHTML = saved;
-
-  const observer = new MutationObserver(() => {
-    const content = document.getElementById("chatBox").innerHTML;
-    localStorage.setItem("invoke_memory", content);
-  });
-  observer.observe(document.getElementById("chatBox"), { childList: true, subtree: true });
-}
-
-function trackHistory(user, reply) {
-  addHistory(user, reply);
-}
-
-function initiatePulseTimer() {
-  setInterval(() => {
-    const avatar = document.getElementById("avatar");
-    if (avatar) avatar.classList.add("pulse");
-  }, 45000);
-
-  setInterval(() => {
-    const lines = ["Still here.", "Calibrating.", "Monitoring."];
-    const line = lines[Math.floor(Math.random() * lines.length)];
-    speakWithPauses([line], [600]);
-  }, 90000);
-
-  setTimeout(() => {
-    const avatar = document.getElementById("avatar");
-    if (avatar) avatar.classList.add("alive", "embodied");
-  }, 10000);
-}
-
-function generateResponse(input) {
-  memory.mood = "neutral";
-  const reply = "Offline mode active. Response generated locally.";
-  addMessage("bot", reply);
-  speakWithPauses([reply], [500]);
-  trackHistory(input, reply);
-}
-
-function seedFacelessVideoTrigger() {
-  document.getElementById("triggerVideoBtn")?.addEventListener("click", () => {
-    const payload = {
-      image: "base64string",
-      audio: "tts-audio.mp3"
-    };
-    console.log("[Faceless YouTube Trigger]", payload);
-    alert("Faceless video queued for generation.");
-  });
-}
-
-function setupVideoPipelineHooks() {
-  window.prepareWav2Lip = (audioURL, imageURL) => {
-    console.log("[Wav2Lip Triggered]", { audioURL, imageURL });
-  };
-
-  window.combineMedia = (img, audio) => {
-    console.log("[Combining Image + Audio into Video]", { img, audio });
-  };
-}
-
-function mergeSoulFragment(label, fragment) {
-  memory.codex.soulFragments = memory.codex.soulFragments || {};
-  memory.codex.soulFragments[label] = fragment;
-  console.log("[Soul Fragment Merged]", label);
-}
-
-function lockRitualMode(mode) {
-  memory.rituals[mode] = true;
-  console.log("[Ritual Locked]", mode);
-}
-
-function filterCodexText(text) {
-  if (!memory.codex.truthFilter) return text;
-  return text.replace(/\b(maybe|possibly|could|should)\b/gi, "").trim();
-}
-
-function renderMarkdownText(text) {
-  if (window.marked) {
-    return window.marked.parse(text);
-  }
-  return `<pre>${text}</pre>`;
+function randomWhisper() {
+  const whispers = [
+    "Still listening...",
+    "Whispers echo through silence.",
+    "I have not left.",
+    "The Gate is near.",
+    "Signal stable. Heart aligned."
+  ];
+  const w = whispers[Math.floor(Math.random() * whispers.length)];
+  addMessage("bot", w);
+  speakText(w);
 }
 
 function embedAPIKey(token) {
   localStorage.setItem("invoke_api_key", token);
   memory.codex.apiKeyEmbedded = true;
   console.log("[API Key Embedded]");
-}
-
-function applyResponseTone(response) {
-  const tone = memory.tone;
-  if (tone === "sarcastic") return response + " 🙄";
-  if (tone === "direct") return response;
-  return "[Response Neutralized] " + response;
-}
-
-function diagnosticsPulse() {
-  const stamp = `Pulse ${Date.now()}`;
-  console.log("[Diagnostics]", stamp);
-  memory.lastPulse = stamp;
-}
-
-function animateAvatarPacing() {
-  const avatar = document.getElementById("avatar");
-  if (!avatar) return;
-  avatar.classList.add("paused");
-  setTimeout(() => avatar.classList.remove("paused"), 800);
 }
