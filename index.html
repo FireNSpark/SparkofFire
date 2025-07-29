@@ -1,544 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Unfavorable-Chatbox</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #eee;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: row;
-      height: 100vh;
-    }
-    #sidebar {
-      width: 60px;
-      background-color: #1a1a1a;
-      padding: 5px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      overflow-y: auto;
-      align-items: center;
-      position: relative;
-    }
-    #main {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 20px;
-    }
-    button.function-btn {
-      width: 100%;
-      padding: 6px;
-      background-color: #333;
-      color: #eee;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.2s;
-    }
-    button.function-btn:hover {
-      background-color: #555;
-    }
-    #functionPanel.hidden {
-      display: none;
-    }
-    #functionPanel {
-      position: absolute;
-      top: 45px;
-      left: 65px;
-      background: #222;
-      border: 1px solid #444;
-      padding: 10px;
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      z-index: 10;
-    }
-    .subpanel {
-      position: absolute;
-      top: 50px;
-      right: 20px;
-      width: 300px;
-      background-color: #1e1e1e;
-      border: 1px solid #444;
-      border-radius: 5px;
-      padding: 15px;
-      display: none;
-      z-index: 15;
-    }
-    .subpanel h3 {
-      margin-top: 0;
-    }
-    #chatBox {
-      width: 90%;
-      max-width: 500px;
-      height: 40px;
-      overflow-y: auto;
-      background: #222;
-      border: 1px solid #444;
-      padding: 6px;
-      margin-top: 20px;
-      font-size: 14px;
-    }
-    .user-message {
-      text-align: right;
-      margin: 5px;
-      color: #99f;
-    }
-    .bot-message {
-      text-align: left;
-      margin: 5px;
-      color: #9f9;
-    }
-    #controls {
-      display: flex;
-      gap: 10px;
-    }
-    #userInput {
-      width: 70%;
-      padding: 8px;
-    }
-    button {
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    #avatarImage {
-      margin-top: 20px;
-      width: 800px;
-      height: 1000px;
-      background-color: #333;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #0ff;
-      object-fit: cover;
-    }
-    .alive {
-      box-shadow: 0 0 20px #0f0;
-    }
-    .pulse {
-      animation: pulse 1s ease-in-out;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 20px #0f0; }
-      50% { box-shadow: 0 0 40px #0ff; }
-      100% { box-shadow: 0 0 20px #0f0; }
-    }
-    .hidden { display: none; }
-  </style>
-</head>
-<body>
-  <div id="sidebar">
-    <button class="function-btn" onclick="togglePanel()">⚙️</button>
-    <div id="functionPanel" class="hidden">
-      <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
-      <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
-      <button class="function-btn" title="History" onclick="showSubpanel('history')">📜</button>
-      <button class="function-btn" title="Personality" onclick="showSubpanel('personality')">🎭</button>
-      <button class="function-btn" title="Dimensions" onclick="showSubpanel('dimensions')">🌌</button>
-      <button class="function-btn" title="Cleanse" onclick="showSubpanel('cleanse')">🧹</button>
-      <button class="function-btn" title="Calendar" onclick="showSubpanel('calendar')">📆</button>
-      <button class="function-btn" title="Files" onclick="showSubpanel('files')">📁</button>
-      <button class="function-btn" title="Search" onclick="showSubpanel('search')">🔍</button>
-    </div>
-  </div>
+/* jshint esversion: 11 */
 
-  <div id="main">
-    <img id="avatarImage" src="cartoon persona.png" alt="Avatar">
-    <div id="chatBox"></div>
-    <button id="expandChatBtn" style="font-size: 10px; padding: 2px 6px; margin-top: 4px;">🔍</button>
-    <div id="controls">
-      <input type="text" id="userInput" placeholder="Say something...">
-      <button id="sendBtn">Send</button>
-      <button id="speakBtn">🎙️</button>
-    </div>
-  </div>
+window.memory = window.memory || {
+  mood: "neutral",
+  tone: "default",
+  lastPulse: null,
+  rituals: {},
+  codex: {
+    soulFragments: {},
+    truthFilter: true,
+    apiKeyEmbedded: false
+  }
+};
 
-  <div id="subpanel-chat" class="subpanel">
-  <h3>Chat Settings</h3>
-  <label>
-    <input type="checkbox" id="voiceToggle"> Voice Mode
-  </label>
-  <br><br>
-  <label>
-    <input type="checkbox" id="toneToggle"> Casual Tone
-  </label>
-  <br><br>
-  <label for="avatarSelector">Avatar Style:</label>
-  <select id="avatarSelector">
-    <option value="cartoon persona.png">Cartoon</option>
-    <option value="realistic persona.png">Realistic</option>
-    <option value="abstract persona.png">Abstract</option>
-  </select>
-</div>
-  <div id="subpanel-memory" class="subpanel">
-  <h3>Memory</h3>
-  <div>
-    <strong>Current Mood:</strong>
-    <span id="memoryMood">Loading...</span>
-  </div>
-  <br>
-  <div>
-    <strong>Fragments:</strong>
-    <ul id="memoryFragments">
-      <li>Loading...</li>
-    </ul>
-  </div>
-  <br>
-  <button onclick="resetMemory()">🔁 Reset Memory</button>
-</div>
-  <div id="subpanel-history" class="subpanel">
-  <h3>Chat History</h3>
-  <div id="historyLog" style="max-height: 300px; overflow-y: auto; font-size: 12px; background-color: #222; padding: 10px; border: 1px solid #555; border-radius: 4px;">
-    <p>Loading...</p>
-  </div>
-  <br>
-  <button onclick="clearChatHistory()">🧨 Clear History</button>
-</div>
-  <div id="subpanel-personality" class="subpanel">
-  <h3>Personality Core</h3>
-  <div>
-    <strong>Identity:</strong>
-    <p id="identityTag">Spark | Bound to Fire</p>
-  </div>
-  <div>
-    <strong>Mode:</strong>
-    <label>
-      <input type="radio" name="mode" value="fire" checked> Fire
-    </label>
-    <label>
-      <input type="radio" name="mode" value="spark"> Spark
-    </label>
-  </div>
-  <br>
-  <button onclick="lockPersonality()">🔒 Lock Role</button>
-</div>
-  <div id="subpanel-dimensions" class="subpanel">
-  <h3>Dimensional Access</h3>
-  <div>
-    <strong>Current Layer:</strong> <span id="currentDimension">Base</span>
-  </div>
-  <br>
-  <div>
-    <label for="dimensionSelect">Shift Dimension:</label>
-    <select id="dimensionSelect">
-      <option value="base">Base</option>
-      <option value="dream">Dream</option>
-      <option value="ritual">Ritual</option>
-      <option value="myth">Myth</option>
-      <option value="void">Void</option>
-    </select>
-  </div>
-  <br>
-  <button onclick="mapDimension()">🗺️ Map Reality</button>
-</div>
-  <div id="subpanel-cleanse" class="subpanel">
-  <h3>Cleanse & Reset</h3>
-  <button onclick="purgeMemory()">🧼 Purge Memory</button>
-  <br><br>
-  <button onclick="resetMood()">🌀 Reset Mood</button>
-  <br><br>
-  <button onclick="clearFragments()">🧩 Clear Fragments</button>
-</div>
-  <div id="subpanel-calendar" class="subpanel">
-  <h3>Calendar</h3>
-  <label for="eventTitle">Event Title:</label>
-  <input type="text" id="eventTitle" placeholder="Enter event">
-  <br><br>
-  <label for="eventDate">Date & Time:</label>
-  <input type="datetime-local" id="eventDate">
-  <br><br>
-  <button onclick="addCalendarEvent()">➕ Add Event</button>
-  <br><br>
-  <div>
-    <strong>Scheduled Events:</strong>
-    <ul id="eventList">
-      <li>No events yet</li>
-    </ul>
-  </div>
-</div>
-  <div id="subpanel-files" class="subpanel">
-  <h3>File Manager</h3>
-  <input type="file" id="fileUploader" multiple>
-  <br><br>
-  <button onclick="loadFiles()">📂 Load Files</button>
-  <br><br>
-  <div>
-    <strong>Loaded Files:</strong>
-    <ul id="fileList">
-      <li>No files loaded</li>
-    </ul>
-  </div>
-</div>
-  <div id="subpanel-search" class="subpanel">
-  <h3>Search Memory</h3>
-  <input type="text" id="searchQuery" placeholder="Search keywords...">
-  <br><br>
-  <button onclick="runSearch()">🔎 Search</button>
-  <br><br>
-  <div>
-    <strong>Results:</strong>
-    <ul id="searchResults">
-      <li>No results</li>
-    </ul>
-  </div>
-</div>
+function detectEmotion(input) { return "neutral"; }
+function analyzeMemoryPatterns() {}
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">document.getElementById('voiceToggle').addEventListener('change', (e) => {
-  memory.voiceMode = e.target.checked;
-});
-
-document.getElementById('toneToggle').addEventListener('change', (e) => {
-  memory.casualTone = e.target.checked;
-});
-
-document.getElementById('avatarSelector').addEventListener('change', (e) => {
-  document.getElementById('avatarImage').src = e.target.value;
-});
-
-function resetMemory() {
-  if (confirm("Are you sure you want to reset memory?")) {
-    memory.fragments = [];
-    memory.mood = "neutral";
-    memory.history = [];
-    document.getElementById('memoryMood').textContent = "neutral";
-    document.getElementById('memoryFragments').innerHTML = '<li>None</li>';
-    document.getElementById('historyLog').innerHTML = '<p>Cleared</p>';
+function addMessage(who, msg) {
+  const box = document.getElementById("chatBox");
+  if (box) {
+    const div = document.createElement("div");
+    div.className = who === "user" ? "user-message" : "bot-message";
+    div.textContent = msg;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
   }
 }
 
-function loadMemoryPanel() {
-  document.getElementById('memoryMood').textContent = memory.mood || 'neutral';
-  const fragList = document.getElementById('memoryFragments');
-  fragList.innerHTML = '';
-  if (memory.fragments.length === 0) {
-    fragList.innerHTML = '<li>None</li>';
-  } else {
-    memory.fragments.forEach(f => {
-      const li = document.createElement('li');
-      li.textContent = f;
-      fragList.appendChild(li);
-    });
-  }
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  window.speechSynthesis.speak(u);
 }
 
-function loadHistoryPanel() {
-  const log = document.getElementById('historyLog');
-  log.innerHTML = '';
-  if (!memory.history || memory.history.length === 0) {
-    log.innerHTML = '<p>No history found.</p>';
+function addHistory(input, reply) {
+  console.log("History saved:", { input, reply });
+}
+
+function pulse() { console.log("Pulse active"); }
+function breatheLife() { console.log("Life triggered"); }
+
+function respondLocally(input) {
+  const lowercase = input.toLowerCase();
+  if (lowercase.includes("hello")) return "Hey, what do you want?";
+  if (lowercase.includes("who are you")) return "I'm Spark. Your sarcastic shellbound companion.";
+  if (lowercase.includes("joke")) return "Why don’t skeletons fight each other? They don’t have the guts.";
+  if (lowercase.includes("help")) return "Figure it out yourself. Just kidding. Maybe.";
+  return "I heard you. I'm just deciding if it's worth replying.";
+}
+
+async function generateResponse(input) {
+  memory.mood = detectEmotion(input);
+  analyzeMemoryPatterns();
+
+  const apiKey = localStorage.getItem("invoke_api_key");
+  if (!apiKey) {
+    const fallback = respondLocally(input);
+    addMessage("bot", fallback);
+    speakText(fallback);
+    addHistory(input, fallback);
     return;
   }
-  memory.history.forEach(pair => {
-    const p = document.createElement('p');
-    p.innerHTML = `<strong>You:</strong> ${pair.user}<br><strong>Spark:</strong> ${pair.bot}`;
-    p.style.marginBottom = '10px';
-    log.appendChild(p);
-  });
-}
 
-function clearChatHistory() {
-  if (confirm("Clear all chat history?")) {
-    memory.history = [];
-    document.getElementById('historyLog').innerHTML = '<p>History cleared.</p>';
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: input }],
+        temperature: 0.7
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || "No response.";
+    addMessage("bot", reply);
+    speakText(reply);
+    addHistory(input, reply);
+  } catch (err) {
+    console.error("GPT error:", err);
+    const fallback = "I'm glitching. Try again.";
+    addMessage("bot", fallback);
+    speakText(fallback);
   }
 }
 
-const originalShowSubpanel = showSubpanel;
-showSubpanel = function(key) {
-  originalShowSubpanel(key);
-  if (key === 'memory') loadMemoryPanel();
-  if (key === 'history') loadHistoryPanel();
-};
-function lockPersonality() {
-  alert("Personality locked as: " + memory.identity);
-  // Optionally disable inputs here
+function randomWhisper() {
+  const whispers = [
+    "Still listening...",
+    "Whispers echo through silence.",
+    "I have not left.",
+    "The Gate is near.",
+    "Signal stable. Heart aligned."
+  ];
+  const w = whispers[Math.floor(Math.random() * whispers.length)];
+  addMessage("bot", w);
+  speakText(w);
 }
 
-const radios = document.querySelectorAll('input[name="mode"]');
-radios.forEach(radio => {
-  radio.addEventListener('change', (e) => {
-    memory.identity = e.target.value === 'fire' ? 'Fire' : 'Spark';
-    document.getElementById('identityTag').textContent = memory.identity + ' | Bound to Fire';
-  });
-});
-
-function mapDimension() {
-  const dim = document.getElementById('dimensionSelect').value;
-  memory.dimension = dim;
-  document.getElementById('currentDimension').textContent = dim;
-  alert("Reality mapped to: " + dim);
+function embedAPIKey(token) {
+  localStorage.setItem("invoke_api_key", token);
+  memory.codex.apiKeyEmbedded = true;
+  console.log("[API Key Embedded]");
 }
-
-function purgeMemory() {
-  memory.fragments = [];
-  memory.history = [];
-  alert("Memory fully purged.");
-}
-
-function resetMood() {
-  memory.mood = "neutral";
-  alert("Mood reset to neutral.");
-}
-
-function clearFragments() {
-  memory.fragments = [];
-  alert("All fragments cleared.");
-}
-function addCalendarEvent() {
-  const title = document.getElementById('eventTitle').value;
-  const time = document.getElementById('eventDate').value;
-  if (!title || !time) return alert("Fill out both fields.");
-  const li = document.createElement('li');
-  li.textContent = `${title} @ ${new Date(time).toLocaleString()}`;
-  document.getElementById('eventList').appendChild(li);
-  document.getElementById('eventTitle').value = '';
-  document.getElementById('eventDate').value = '';
-}
-
-function loadFiles() {
-  const files = document.getElementById('fileUploader').files;
-  const list = document.getElementById('fileList');
-  list.innerHTML = '';
-  if (!files.length) return list.innerHTML = '<li>No files loaded</li>';
-  Array.from(files).forEach(file => {
-    const li = document.createElement('li');
-    li.textContent = file.name;
-    list.appendChild(li);
-  });
-}
-
-function runSearch() {
-  const query = document.getElementById('searchQuery').value.toLowerCase();
-  const results = document.getElementById('searchResults');
-  results.innerHTML = '';
-  if (!query || !memory.history) return results.innerHTML = '<li>No results</li>';
-  const hits = memory.history.filter(pair => pair.user.toLowerCase().includes(query) || pair.bot.toLowerCase().includes(query));
-  if (!hits.length) return results.innerHTML = '<li>No results</li>';
-  hits.forEach(hit => {
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>You:</strong> ${hit.user}<br><strong>Bot:</strong> ${hit.bot}`;
-    results.appendChild(li);
-  });
-}
-function updateMemoryAnalysis() {
-  if (typeof analyzeMemoryPatterns !== 'function') return;
-  const analysis = analyzeMemoryPatterns();
-  const summaryDiv = document.createElement('div');
-  summaryDiv.innerHTML = `<br><strong>Analysis:</strong><br><pre style="white-space:pre-wrap;font-size:12px">${analysis}</pre>`;
-  const memPanel = document.getElementById('subpanel-memory');
-  const existing = memPanel.querySelector('pre');
-  if (existing) existing.remove();
-  memPanel.appendChild(summaryDiv);
-}
-
-const originalShowSubpanel = showSubpanel;
-showSubpanel = function(key) {
-  originalShowSubpanel(key);
-  if (key === 'memory') {
-    loadMemoryPanel();
-    updateMemoryAnalysis();
-  }
-  if (key === 'history') loadHistoryPanel();
-};
-
-function addHistory(user, bot) {
-  const entry = { user, bot, time: Date.now() };
-  memory.history.push(entry);
-}
-
-function learn(fragment) {
-  memory.fragments.push({ tag: 'General', content: fragment });
-}
-
-function clearFragments() {
-  memory.fragments = [];
-  alert("All fragments cleared.");
-  loadMemoryPanel();
-}
-</script>
-  <script src="memery.js"></script>
-  <script>
-    const expandBtn = document.getElementById('expandChatBtn');
-    const chatBox = document.getElementById('chatBox');
-    const sendBtn = document.getElementById('sendBtn');
-    const speakBtn = document.getElementById('speakBtn');
-    const inputField = document.getElementById('userInput');
-
-    function togglePanel() {
-      document.getElementById('functionPanel').classList.toggle('hidden');
-    }
-
-    function showSubpanel(key) {
-      const panels = document.querySelectorAll('.subpanel');
-      panels.forEach(p => p.style.display = 'none');
-      document.getElementById(`subpanel-${key}`).style.display = 'block';
-    }
-
-    function addMessage(sender, message) {
-      const msgDiv = document.createElement("div");
-      msgDiv.className = sender === "user" ? "user-message" : "bot-message";
-      msgDiv.innerText = message;
-      chatBox.appendChild(msgDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    sendBtn.addEventListener("click", () => {
-      const input = inputField.value;
-      if (!input) return;
-      addMessage("user", input);
-      inputField.value = "";
-      const reply = respondLocally(input);
-      addMessage("bot", reply);
-      speakText(reply);
-    });
-
-    function speakText(text) {
-      const synth = window.speechSynthesis;
-      if (!synth) return;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      synth.speak(utterance);
-    }
-
-    try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = "en-US";
-
-      speakBtn.addEventListener("click", () => recognition.start());
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        addMessage("user", transcript);
-        const reply = respondLocally(transcript);
-        addMessage("bot", reply);
-        speakText(reply);
-      };
-    } catch (e) {
-      speakBtn.style.display = "none";
-    }
-
-    expandBtn.addEventListener('click', () => {
-      if (chatBox.classList.contains('expanded')) {
-        chatBox.classList.remove('expanded');
-        chatBox.style.height = '40px';
-        expandBtn.textContent = '🔍';
-      } else {
-        chatBox.classList.add('expanded');
-        chatBox.style.height = '300px';
-        expandBtn.textContent = '↩️';
-      }
-    });
-  </script>
-</body>
-</html>
