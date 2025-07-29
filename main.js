@@ -1,5 +1,18 @@
 // main.js - Live assistant logic
 
+// Toggle the function panel visibility
+function togglePanel() {
+  docu
+ment.getElementById('functionPanel').classList.toggle('hidden');
+}
+
+// Show the selected subpanel and hide others
+function showSubpanel(key) {
+  document.querySelectorAll('.subpanel').forEach(p => p.style.display = 'none');
+  const target = document.getElementById(`subpanel-${key}`);
+  if (target) target.style.display = 'block';
+}
+
 import { memory, respondLocally, addHistory, analyzeMemoryPatterns, learn } from './memery.js';
 
 const chatBox = document.getElementById('chatBox');
