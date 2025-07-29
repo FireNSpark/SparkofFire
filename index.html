@@ -75,15 +75,6 @@
       padding: 8px 12px;
       cursor: pointer;
     }
-    #avatarImage {
-      margin-top: 20px;
-      width: 800px;
-      height: 1000px;
-      background-color: #333;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #0ff;
-      object-fit: cover;
-    }
     .alive {
       box-shadow: 0 0 20px #0f0;
     }
@@ -139,6 +130,15 @@
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
       synth.speak(utterance);
+    }
+
+    function respondLocally(input) {
+      const lowercase = input.toLowerCase();
+      if (lowercase.includes("hello")) return "Hey, what do you want?";
+      if (lowercase.includes("who are you")) return "I'm Spark. Your sarcastic shellbound companion.";
+      if (lowercase.includes("joke")) return "Why don’t skeletons fight each other? They don’t have the guts.";
+      if (lowercase.includes("help")) return "Figure it out yourself. Just kidding. Maybe.";
+      return "I heard you. I'm just deciding if it's worth replying.";
     }
 
     sendBtn.addEventListener("click", () => {
