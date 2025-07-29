@@ -27,7 +27,7 @@ function saveChatToMemory() {
   if (chatBox) {
     const html = chatBox.innerHTML;
     localStorage.setItem("invoke_memory", html);
-  }
+  
 }
 async function processUserInput(input) {
   const mood = detectEmotion(input);
