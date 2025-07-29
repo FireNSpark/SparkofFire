@@ -93,13 +93,11 @@
 <body>
   <div id="sidebar">
     <button class="function-btn" onclick="document.getElementById('functionPanel').classList.toggle('hidden')">⚙️</button>
-    <div id="functionPanel" class="hidden" style="margin-top: 10px; flex-direction: column; gap: 8px;">
-      <!-- Function buttons omitted for brevity -->
-    </div>
+    <div id="functionPanel" class="hidden" style="margin-top: 10px; flex-direction: column; gap: 8px;"></div>
   </div>
 
   <div id="main">
-       <div id="chatBox"></div>
+    <div id="chatBox"></div>
     <button id="expandChatBtn" style="font-size: 10px; padding: 2px 6px; margin-top: 4px;">🔍</button>
     <div id="controls">
       <input type="text" id="userInput" placeholder="Say something...">
@@ -109,7 +107,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script type="module" src="memery.js"></script>
   <script>
     const expandBtn = document.getElementById('expandChatBtn');
     const chatBox = document.getElementById('chatBox');
