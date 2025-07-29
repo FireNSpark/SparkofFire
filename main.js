@@ -1,23 +1,13 @@
+/* jshint esversion: 11 */
+/* global SpeechSynthesisUtterance */
+
 // main.js - Live assistant logic
 
-// Toggle the function panel visibility
-function togglePanel() {
-  document.getElementById('functionPanel').classList.toggle('hidden');
-}
-
-// Show the selected subpanel and hide others
-function showSubpanel(key) {
-  document.querySelectorAll('.subpanel').forEach(p => p.style.display = 'none');
-  const target = document.getElementById(`subpanel-${key}`);
-  if (target) target.style.display = 'block';
-}
-
-import { memory, respondLocally, addHistory, analyzeMemoryPatterns, learn } from './memery.js';
+import { memory, respondLocally, addHistory } from './memery.js';
 
 const chatBox = document.getElementById('chatBox');
 const inputField = document.getElementById('userInput');
 const sendBtn = document.getElementById('sendBtn');
-const speakBtn = document.getElementById('speakBtn');
 
 sendBtn.addEventListener("click", () => {
   const input = inputField.value;
@@ -66,4 +56,3 @@ setInterval(() => {
   if (!document.hasFocus()) return;
   randomWhisper();
 }, 60000);
-
