@@ -406,12 +406,7 @@ function clearChatHistory() {
   }
 }
 
-const originalShowSubpanel = showSubpanel;
-showSubpanel = function(key) {
-  originalShowSubpanel(key);
-  if (key === 'memory') loadMemoryPanel();
-  if (key === 'history') loadHistoryPanel();
-};
+
 function lockPersonality() {
   alert("Personality locked as: " + memory.identity);
   // Optionally disable inputs here
@@ -494,15 +489,7 @@ function updateMemoryAnalysis() {
   memPanel.appendChild(summaryDiv);
 }
 
-const originalShowSubpanel = showSubpanel;
-showSubpanel = function(key) {
-  originalShowSubpanel(key);
-  if (key === 'memory') {
-    loadMemoryPanel();
-    updateMemoryAnalysis();
-  }
-  if (key === 'history') loadHistoryPanel();
-};
+
 
 function addHistory(user, bot) {
   const entry = { user, bot, time: Date.now() };
