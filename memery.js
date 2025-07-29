@@ -1,3 +1,8 @@
+51	5	/* jshint esversion: 8 */	The 'esversion' option cannot be set after any executable code.
+75	4	};	Expected ')' and instead saw ';'.
+76	15		Unrecoverable syntax error. (38% scanned).
+
+
 function processUserInput(input) {
   const mood = detectEmotion(input);
   memory.mood = mood;
