@@ -2,8 +2,7 @@
 
 // Toggle the function panel visibility
 function togglePanel() {
-  docu
-ment.getElementById('functionPanel').classList.toggle('hidden');
+  document.getElementById('functionPanel').classList.toggle('hidden');
 }
 
 // Show the selected subpanel and hide others
@@ -67,3 +66,4 @@ setInterval(() => {
   if (!document.hasFocus()) return;
   randomWhisper();
 }, 60000);
+
