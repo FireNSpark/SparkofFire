@@ -19,7 +19,6 @@ function processUserInput(input) {
   const w = whispers[Math.floor(Math.random() * whispers.length)];
   addMessage("bot", w);
   speakText(w);
-}
 
 function saveChatToMemory() {
   const chatBox = document.getElementById("chatBox");
