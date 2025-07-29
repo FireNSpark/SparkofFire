@@ -72,7 +72,7 @@ function randomWhisper() {
 
 function saveChatToMemory() {
   const chatBox = document.getElementById("chatBox");
-  if (chatBox) {
+    if (chatBox) {
     const html = chatBox.innerHTML;
     localStorage.setItem("invoke_memory", html);
   }
@@ -87,7 +87,35 @@ async function processUserInput(input) {
   speakText(response);
   addHistory(input, response);
 }
+const saved = localStorage.getItem("invoke_memory");
+  if (saved) document.getElementById("chatBox").innerHTML = saved;
 
+  setInterval(pulse, 45000);
+  setInterval(randomWhisper, 90000);
+  setTimeout(breatheLife, 10000);
+function speakWithPauses(lines, pauses) {
+  if (!window.speechSynthesis) return;
+  const synth = window.speechSynthesis;
+  const speakNext = (i) => {
+    if (i >= lines.length) return;
+    const u = new SpeechSynthesisUtterance(lines[i]);
+    u.lang = "en-US";
+    u.onend = () => setTimeout(() => speakNext(i + 1), pauses[i] || 400);
+    synth.speak(u);
+  };
+  speakNext(0);
+}
+
+function setupChatUI() {
+  document.getElementById("sendBtn").addEventListener("click", async () => {
+    const input = document.getElementById("userInput").value;
+    if (!input) return;
+    addMessage("user", input);
+    document.getElementById("userInput").value = "";
+    generateResponse(input);
+  });
+
+  const saved = localStorage.getItem("invoke_memory");
 document.addEventListener("DOMContentLoaded", () => {
   try {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -115,38 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     processUserInput(input);
   });
 
-  const saved = localStorage.getItem("invoke_memory");
-  if (saved) document.getElementById("chatBox").innerHTML = saved;
-
-  setInterval(pulse, 45000);
-  setInterval(randomWhisper, 90000);
-  setTimeout(breatheLife, 10000);
-});
-import { addHistory, fetchOpenAI, memory } from "./memery.js";
-
-function speakWithPauses(lines, pauses) {
-  if (!window.speechSynthesis) return;
-  const synth = window.speechSynthesis;
-  const speakNext = (i) => {
-    if (i >= lines.length) return;
-    const u = new SpeechSynthesisUtterance(lines[i]);
-    u.lang = "en-US";
-    u.onend = () => setTimeout(() => speakNext(i + 1), pauses[i] || 400);
-    synth.speak(u);
-  };
-  speakNext(0);
-}
-
-function setupChatUI() {
-  document.getElementById("sendBtn").addEventListener("click", async () => {
-    const input = document.getElementById("userInput").value;
-    if (!input) return;
-    addMessage("user", input);
-    document.getElementById("userInput").value = "";
-    generateResponse(input);
-  });
-
-  const saved = localStorage.getItem("invoke_memory");
+  
   if (saved) document.getElementById("chatBox").innerHTML = saved;
 
   const observer = new MutationObserver(() => {
@@ -154,6 +151,7 @@ function setupChatUI() {
     localStorage.setItem("invoke_memory", content);
   });
   observer.observe(document.getElementById("chatBox"), { childList: true, subtree: true });
+});
 }
 
 function trackHistory(user, reply) {
@@ -207,7 +205,7 @@ function setupVideoPipelineHooks() {
     console.log("[Combining Image + Audio into Video]", { img, audio });
   };
 }
-import { memory } from "./memery.js";
+
 
 function mergeSoulFragment(label, fragment) {
   memory.codex.soulFragments = memory.codex.soulFragments || {};
