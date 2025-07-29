@@ -1,62 +1,42 @@
-51	5	/* jshint esversion: 8 */	The 'esversion' option cannot be set after any executable code.
-75	4	};	Expected ')' and instead saw ';'.
-76	15		Unrecoverable syntax error. (38% scanned).
+/* jshint esversion: 11 */
 
-
-function processUserInput(input) {
-  const mood = detectEmotion(input);
-  memory.mood = mood;
-  analyzeMemoryPatterns();
-
-  let reply = respondLocally(input);
-  addMessage("bot", reply);
-  speakText(reply);
-  addHistory(input, reply);
-}
-
-function randomWhisper() {
-  const whispers = [
-    "Still listening...",
-    "Whispers echo through silence.",
-    "I have not left.",
-    "The Gate is near.",
-    "Signal stable. Heart aligned."
-  ];
-  const w = whispers[Math.floor(Math.random() * whispers.length)];
-  addMessage("bot", w);
-  speakText(w);
-}
-
-function saveChatToMemory() {
-  const chatBox = document.getElementById("chatBox");
-  if (chatBox) {
-    const html = chatBox.innerHTML;
-    localStorage.setItem("invoke_memory", html);
+// TEMP PATCH: Provide default dummy versions for missing globals
+window.memory = window.memory || {
+  mood: "neutral",
+  tone: "default",
+  lastPulse: null,
+  rituals: {},
+  codex: {
+    soulFragments: {},
+    truthFilter: true,
+    apiKeyEmbedded: false
   }
-} 
+};
+
+function detectEmotion(input) { return "neutral"; }
+function analyzeMemoryPatterns() {}
+function respondLocally(input) { return "Default local response."; }
+function addMessage(who, msg) {
+  console.log(`[${who}] ${msg}`);
+  const box = document.getElementById("chatBox");
+  if (box) box.innerHTML += `<div><b>${who}:</b> ${msg}</div>`;
 }
-async function processUserInput(input) {
-  const mood = detectEmotion(input);
-  memory.mood = mood;
-  analyzeMemoryPatterns();
-  const response = "I'm offline right now, but I'm still listening.";
-  addMessage("bot", response);
-  speakText(response);
-  addHistory(input, response);
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  window.speechSynthesis.speak(u);
+}
+function addHistory(input, reply) {
+  console.log("History saved:", { input, reply });
+}
+function pulse() {
+  console.log("Pulse active");
+}
+function breatheLife() {
+  console.log("Life triggered");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  try {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = "en-US";
-
-    document.getElementById("speakBtn").addEventListener("click", () => recognition.start());
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      addMessage("user", transcript);
       processUserInput(transcript);
     };
   } catch (_) {
@@ -79,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(randomWhisper, 90000);
   setTimeout(breatheLife, 10000);
 });
-import { addHistory, memory } from "./memery.js";
 
 function speakWithPauses(lines, pauses) {
   if (!window.speechSynthesis) return;
@@ -138,14 +117,11 @@ function initiatePulseTimer() {
 function generateResponse(input) {
   memory.mood = "neutral";
   const reply = "Offline mode active. Response generated locally.";
-addMessage("bot", reply);
-speakWithPauses([reply], [500]);
-trackHistory(input, reply);
-    addMessage("bot", reply);
-    speakWithPauses([reply], [500]);
-    trackHistory(input, reply);
-  });
+  addMessage("bot", reply);
+  speakWithPauses([reply], [500]);
+  trackHistory(input, reply);
 }
+
 function seedFacelessVideoTrigger() {
   document.getElementById("triggerVideoBtn")?.addEventListener("click", () => {
     const payload = {
