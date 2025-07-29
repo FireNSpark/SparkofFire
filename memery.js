@@ -33,13 +33,22 @@ function addHistory(input, reply) {
 function pulse() {
   console.log("Pulse active");
 }
-function breatheLife() {
-  console.log("Life triggered");
-}
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
 
+    document.getElementById("speakBtn").addEventListener("click", () => recognition.start());
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      addMessage("user", transcript);
       processUserInput(transcript);
     };
-  catch (_) {
+  } catch (_) {
     const speakBtn = document.getElementById("speakBtn");
     if (speakBtn) speakBtn.style.display = "none";
   }
@@ -54,6 +63,7 @@ function breatheLife() {
 
   const saved = localStorage.getItem("invoke_memory");
   if (saved) document.getElementById("chatBox").innerHTML = saved;
+});
 
   setInterval(pulse, 45000);
   setInterval(randomWhisper, 90000);
