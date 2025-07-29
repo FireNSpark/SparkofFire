@@ -39,7 +39,7 @@ function breatheLife() {
 
       processUserInput(transcript);
     };
-  } catch (_) {
+  catch (_) {
     const speakBtn = document.getElementById("speakBtn");
     if (speakBtn) speakBtn.style.display = "none";
   }
