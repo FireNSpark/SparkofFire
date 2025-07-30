@@ -31,7 +31,7 @@ function runSearch() {
   if (results.length === 0) {
     addMessage("bot", "Nothing in memory matches that query.");
   } else {
-    const summary = results.map(r => `🧠 ${r.user} → ${r.bot}`).join("
+    const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join("
 ");
     addMessage("bot", summary);
   }
@@ -39,8 +39,8 @@ function runSearch() {
 function loadFiles() {
   const codexKeys = Object.keys(memory.codex || {}).join(", ") || "none";
   const rituals = Object.keys(memory.rituals || {}).join(", ") || "none";
-  addMessage("bot", `Codex keys: ${codexKeys}
-Rituals: ${rituals}`);
+  addMessage("bot", 'Codex keys: ' + codexKeys + '
+Rituals: ' + rituals);
 }
 function addCalendarEvent() {
   const now = new Date().toLocaleString();
