@@ -113,7 +113,7 @@ export async function fetchOpenAI(prompt) {
   }
   localStorage.setItem("invoke_api_key", apiKey);
 
-  // Removed duplicated fetch logic that was outside the function
+  // Removed duplicate fetch block outside of fetchOpenAI
 }
 
 const response = await fetch("https://api.openai.com/v1/chat/completions", {
