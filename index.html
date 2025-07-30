@@ -936,7 +936,8 @@ function clearFragments() {
 
 </script>
 
-<script type="module" src="main.js">
+<script type="module">
+import { memory, speakText, respondLocally, addHistory } from './Spark.js';
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -999,13 +1000,10 @@ recognition.start();
 
     inputField.value = "";
 
-    respondWithGPT(input).then((reply) => {
-
-      addMessage("bot", reply);
-
-      speakText(reply);
-
-    });
+    const reply = respondLocally(input);
+    addHistory(input, reply);
+    addMessage("bot", reply);
+    speakText(reply);
 
   });
 
