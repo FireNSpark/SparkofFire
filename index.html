@@ -165,8 +165,7 @@
   }
 </style>
 </head>
-<body>
-<script>
+ <script>
   function togglePanel() {
     const panel = document.getElementById('functionPanel');
     if (!panel) return;
@@ -178,7 +177,9 @@
     const panel = document.getElementById("subpanel-" + id);
     if (panel) panel.style.display = "block";
   }
-</script>
+</script>  
+<body>
+
   <div id="sidebar">
   <button class="function-btn" onclick="togglePanel()">⚙️</button>
   <div id="functionPanel" class="hidden">
