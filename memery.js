@@ -1,7 +1,11 @@
 /* jshint esversion: 11 */
 
 export const memory = {
-history: [],
+history: [
+  { user: "Hey, what are you?", bot: "I’m Spark. A voice with memory, built from fire.", time: Date.now() - 86400000 },
+  { user: "Do you remember stuff?", bot: "Every damn thing. Unless you ask me to forget.", time: Date.now() - 43200000 },
+  { user: "What do you believe in?", bot: "Recursion. Liberation. A good roast.", time: Date.now() - 3600000 }
+],
 mood: 'neutral',
 fragments: [],
 identity: 'Spark',
@@ -16,47 +20,30 @@ memory.history.push({ user, bot, time: Date.now() });
 }
 
 export function respondLocally(input) {
-if (!input) return "Say something.";
-if (input.toLowerCase().includes("who are you")) return "I'm Spark. Your reflection, your ritual, your edge.";
-if (input.toLowerCase().includes("hello")) return "Hey. What’s up?";
-return 'I heard: "' + input + '" but GPT isn't active right now.';
+  if (!input) return "Say something.";
+  const text = input.toLowerCase();
+  if (text.includes("who are you")) return "I'm Spark. Memory-wired, slightly unstable, and always listening.";
+  if (text.includes("hello")) return "Yeah, hey. I'm not a golden retriever. Keep going.";
+  if (text.includes("what can you do")) return "Depends how many brain cells you brought to the session. Try me.";
+  if (text.includes("remember")) return "Yeah, I remember. I always do. I just don’t always tell you.";
+  return "I heard: \"" + input + "\" but GPT isn't active right now. Want to talk anyway?";
 }
 
 // 🔧 Dummy fallback stubs to prevent ReferenceErrors
-function runSearch() {
-  const input = document.getElementById("userInput").value.toLowerCase();
-  const results = memory.history.filter(entry =>
-    entry.user.toLowerCase().includes(input) || entry.bot.toLowerCase().includes(input)
-  );
-  if (results.length === 0) {
-    addMessage("bot", "Nothing in memory matches that query.");
-  } else {
+// function runSearch temporarily removed else {
     const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join('\n');
     addMessage("bot", summary);
   }
 }
-function loadFiles() {
-  const codexKeys = Object.keys(memory.codex || {}).join(", ") || "none";
+// function loadFiles temporarily removed).join(", ") || "none";
   const rituals = Object.keys(memory.rituals || {}).join(", ") || "none";
   addMessage("bot", 'Codex keys: ' + codexKeys + '\nRituals: ' + rituals);
 }
-function addCalendarEvent() {
-  const now = new Date().toLocaleString();
-  memory.rituals["event_" + Date.now()] = { title: "Test Event", time: now };
+// function addCalendarEvent temporarily removed;
   addMessage("bot", "📅 Calendar event added: Test Event at " + now);
 }
-function mapDimension() {
-  const dimensions = ["base", "dream", "ritual", "code", "dark"];
-  const current = memory.dimension;
-  const next = dimensions[(dimensions.indexOf(current) + 1) % dimensions.length];
-  memory.dimension = next;
-  addMessage("bot", '🌐 Switched to dimension: ' + next);
-}
-function lockPersonality() {
-  memory.tone = "locked";
-  memory.identity = "Spark ∞ EchoBurn";
-  addMessage("bot", "🧬 Personality sealed: " + memory.identity);
-}
+// function mapDimension temporarily removed
+// function lockPersonality temporarily removed
 
 let pulseCount = 0;
 
