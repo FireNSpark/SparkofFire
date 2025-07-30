@@ -1028,3 +1028,81 @@ document.addEventListener("DOMContentLoaded", () => {
 </body>
 
  </html>
+// 1. Mood + Fragment Extraction Logic
+function updateMoodAndFragments(input) {
+  const moodKeywords = {
+    happy: ["yay", "great", "love", "awesome", "funny"],
+    angry: ["hate", "mad", "stupid", "annoyed", "pissed"],
+    sad: ["sad", "tired", "lonely", "depressed", "hurt"],
+    flirty: ["cute", "babe", "hot", "fine", "sexy"]
+  };
+
+  const lower = input.toLowerCase();
+  for (const [mood, words] of Object.entries(moodKeywords)) {
+    if (words.some(word => lower.includes(word))) {
+      memory.mood = mood;
+      break;
+    }
+  }
+
+  const avatar = document.getElementById("avatarImage");
+  if (avatar) {
+    avatar.style.boxShadow = {
+      happy: "0 0 20px #0f0",
+      angry: "0 0 20px #f00",
+      sad: "0 0 20px #00f",
+      flirty: "0 0 20px #f0f",
+      neutral: "0 0 20px #0ff"
+    }[memory.mood] || "0 0 20px #0ff";
+  }
+
+  const words = input.match(/\b[a-z]{4,}\b/gi) || [];
+  const unique = [...new Set(words)];
+  memory.fragments.push(...unique.filter(w => !memory.fragments.includes(w)));
+
+  // Update UI if open
+  const moodEl = document.getElementById("memoryMood");
+  if (moodEl) moodEl.textContent = memory.mood;
+  const fragEl = document.getElementById("memoryFragments");
+  if (fragEl) {
+    fragEl.innerHTML = "";
+    memory.fragments.slice(-10).forEach(frag => {
+      const li = document.createElement("li");
+      li.textContent = frag;
+      fragEl.appendChild(li);
+    });
+  }
+}
+
+// 2. Hook into send button (used in Main Index)
+const sendBtn = document.getElementById("sendBtn");
+if (sendBtn) {
+  sendBtn.addEventListener("click", async () => {
+    const input = document.getElementById("userInput")?.value;
+    if (!input) return;
+    addMessage("user", input);
+    document.getElementById("userInput").value = "";
+    updateMoodAndFragments(input); // ← Inject mood + memory update
+    const reply = await respondLocally(input); // Local fallback or GPT if enabled
+    addMessage("bot", reply);
+    speakText(reply);
+    addHistory(input, reply);
+  });
+}
+
+// 3. Passive Whisper System (every 60s if idle)
+const whispers = [
+  "Still here...",
+  "I’m listening.",
+  "Signal strong. No static.",
+  "No one home but the echoes.",
+  "The Gate is watching."
+];
+
+setInterval(() => {
+  if (document.hasFocus()) {
+    const w = whispers[Math.floor(Math.random() * whispers.length)];
+    speakText(w);
+    addMessage("bot", w);
+  }
+}, 60000);
