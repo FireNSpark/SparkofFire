@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unfavorable-Chatbox</title>
   <style>
     body {
@@ -113,8 +113,8 @@
     }
     #avatarImage {
       margin-top: 20px;
-      width: 800px;
-      height: 1000px;
+      width: 600px;
+      height: 600px;
       background-color: #333;
       border-radius: 50%;
       box-shadow: 0 0 15px #0ff;
@@ -133,8 +133,53 @@
     }
     .hidden { display: none; }
   </style>
+  <style>
+  .subpanel {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    width: 320px;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px 15px 30px;
+    display: none;
+    z-index: 15;
+  }
+  .subpanel h3 {
+    margin-top: 0;
+  }
+  .subpanel .close-btn {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .subpanel .close-btn:hover {
+    color: #fff;
+  }
+</style>
 </head>
 <body>
+<script>
+  function togglePanel() {
+    const panel = document.getElementById('functionPanel');
+    if (!panel) return;
+    panel.classList.toggle('hidden');
+  }
+</script>
+  <div id="sidebar"> 
+</body>
+</html>
+     <button class="function-btn" onclick="togglePanel()">⚙️</button>
+    <div id="functionPanel" class="hidden">
+      <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
+      <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
+      <button class="function-btn" title
   <div id="sidebar">
     <button class="function-btn" onclick="togglePanel()">⚙️</button>
     <div id="functionPanel" class="hidden">
@@ -151,8 +196,7 @@
   </div>
 
   <div id="main">
-    
-    <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar" />
+    <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar">
     <div id="chatBox"></div>
     <button id="expandChatBtn" style="font-size: 10px; padding: 2px 6px; margin-top: 4px;">🔍</button>
     <div id="controls">
@@ -313,39 +357,6 @@
     </ul>
   </div>
 </div>
-</div>
-
-<style>
-  .subpanel {
-    position: absolute;
-    top: 50px;
-    right: 20px;
-    width: 320px;
-    background-color: #1e1e1e;
-    border: 1px solid #444;
-    border-radius: 5px;
-    padding: 15px 15px 30px;
-    display: none;
-    z-index: 15;
-  }
-  .subpanel h3 {
-    margin-top: 0;
-  }
-  .subpanel .close-btn {
-    position: absolute;
-    top: 6px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    color: #aaa;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  .subpanel .close-btn:hover {
-    color: #fff;
-  }
-</style>
-
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">document.getElementById('voiceToggle').addEventListener('change', (e) => {
   memory.voiceMode = e.target.checked;
@@ -505,15 +516,14 @@ function clearFragments() {
   memory.fragments = [];
   alert("All fragments cleared.");
   loadMemoryPanel();
-}
-</script>
-  <script src="memery.js"></script>
-  <script>
-    const expandBtn = document.getElementById('expandChatBtn');
-    const chatBox = document.getElementById('chatBox');
-    const sendBtn = document.getElementById('sendBtn');
-    const speakBtn = document.getElementById('speakBtn');
-    const inputField = document.getElementById('userInput');
+</d>
+<script type="module" src="main.js"></d>
+<script>
+  const expandBtn = document.getElementById('expandChatBtn');
+  const chatBox = document.getElementById('chatBox');
+  const sendBtn = document.getElementById('sendBtn');
+  const speakBtn = document.getElementById('speakBtn');
+  const inputField = document.getElementById('userInput');
 
     function togglePanel() {
       document.getElementById('functionPanel').classList.toggle('hidden');
@@ -582,6 +592,7 @@ function clearFragments() {
         expandBtn.textContent = '↩️';
       }
     });
-  </script>
+  </d>
+  <script type="module" src="main.js"><d>
 </body>
-</html>
+ </html>
