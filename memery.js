@@ -29,22 +29,6 @@ export function respondLocally(input) {
   return "I heard: \"" + input + "\" but GPT isn't active right now. Want to talk anyway?";
 }
 
-// 🔧 Dummy fallback stubs to prevent ReferenceErrors
-// function runSearch temporarily removed else {
-    const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join('\n');
-    addMessage("bot", summary);
-  }
-}
-// function loadFiles temporarily removed).join(", ") || "none";
-  const rituals = Object.keys(memory.rituals || {}).join(", ") || "none";
-  addMessage("bot", 'Codex keys: ' + codexKeys + '\nRituals: ' + rituals);
-}
-// function addCalendarEvent temporarily removed;
-  addMessage("bot", "📅 Calendar event added: Test Event at " + now);
-}
-// function mapDimension temporarily removed
-// function lockPersonality temporarily removed
-
 let pulseCount = 0;
 
 function speakText(text) {
