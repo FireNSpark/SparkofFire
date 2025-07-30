@@ -165,16 +165,13 @@
 </style>
 </head>
 <body>
-<script>
+ <script>
   function togglePanel() {
     const panel = document.getElementById('functionPanel');
     if (!panel) return;
     panel.classList.toggle('hidden');
   }
 </script>
-  <div id="sidebar"> 
-</body>
-</html>
      <button class="function-btn" onclick="togglePanel()">⚙️</button>
     <div id="functionPanel" class="hidden">
       <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
