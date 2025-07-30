@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unfavorable-Chatbox</title>
+   <title>Unfavorable-Chatbox</title>
   <style>
     body {
       background-color: #111;
@@ -111,15 +111,16 @@
       padding: 8px 12px;
       cursor: pointer;
     }
-    #avatarImage {
-      margin-top: 20px;
-      width: 600px;
-      height: 600px;
-      background-color: #333;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #0ff;
-      object-fit: cover;
-    }
+  #avatarImage {
+  margin-top: 20px;
+  width: 600px;
+  height: 600px;
+  background-color: #333;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #0ff;
+  object-fit: cover;
+}
+
     .alive {
       box-shadow: 0 0 20px #0f0;
     }
@@ -171,30 +172,38 @@
     if (!panel) return;
     panel.classList.toggle('hidden');
   }
-</script>
-  <button class="function-btn" onclick="togglePanel()">⚙️</button>
-    <div id="functionPanel" class="hidden">
-      <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
-      <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
-      <button class="function-btn" title="History" onclick="showSubpanel('history')">📜</button>
-      <button class="function-btn" title="Personality" onclick="showSubpanel('personality')">🎭</button>
-      <button class="function-btn" title="Dimensions" onclick="showSubpanel('dimensions')">🌌</button>
-      <button class="function-btn" title="Cleanse" onclick="showSubpanel('cleanse')">🧹</button>
-      <button class="function-btn" title="Calendar" onclick="showSubpanel('calendar')">📆</button>
-      <button class="function-btn" title="Files" onclick="showSubpanel('files')">📁</button>
-      <button class="function-btn" title="Search" onclick="showSubpanel('search')">🔍</button>
-    </div>
-  </div>
 
+  function showSubpanel(id) {
+    document.querySelectorAll(".subpanel").forEach(panel => panel.style.display = "none");
+    const panel = document.getElementById("subpanel-" + id);
+    if (panel) panel.style.display = "block";
+  }
+</script>
+  <div id="sidebar">
+  <button class="function-btn" onclick="togglePanel()">⚙️</button>
+  <div id="functionPanel" class="hidden">
+  <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
+  <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
+  <button class="function-btn" title="History" onclick="showSubpanel('history')">📜</button>
+  <button class="function-btn" title="Personality" onclick="showSubpanel('personality')">🎭</button>
+  <button class="function-btn" title="Dimensions" onclick="showSubpanel('dimensions')">🌌</button>
+  <button class="function-btn" title="Cleanse" onclick="showSubpanel('cleanse')">🧹</button>
+  <button class="function-btn" title="Calendar" onclick="showSubpanel('calendar')">📆</button>
+  <button class="function-btn" title="Files" onclick="showSubpanel('files')">📁</button>
+  <button class="function-btn" title="Search" onclick="showSubpanel('search')">🔍</button>
+</div>
+</div>
+  
   <div id="main">
-    <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar">
+  <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar" style="flex-shrink:0;">
+  <div style="display:flex; flex-direction:column; flex-grow:1; justify-content:space-between; height:100%;">
     <div id="chatBox"></div>
 
-    <div id="controls">
-      <input type="text" id="userInput" placeholder="Say something...">
-      <button id="sendBtn">Send</button>
-      <button id="speakBtn">🎙️</button>
-    </div>
+    <div id="controls" style="margin-top:auto; display:flex; justify-content:space-between; padding:10px 0;">
+  <input type="text" id="userInput" placeholder="Say something..." style="flex-grow:1; padding:8px; margin-right:10px;">
+  <button id="speakBtn">🎙️</button>
+  <button id="sendBtn">Send</button>
+</div>
   </div>
 
   <div id="subpanel-chat" class="subpanel">
@@ -349,25 +358,31 @@
   </div>
 </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">document.getElementById('voiceToggle').addEventListener('change', (e) => {
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+document.getElementById('voiceToggle').addEventListener('change', (e) => {
   memory.voiceMode = e.target.checked;
 });
-
 document.getElementById('toneToggle').addEventListener('change', (e) => {
   memory.casualTone = e.target.checked;
 });
-
 document.getElementById('avatarSelector').addEventListener('change', (e) => {
   document.getElementById('avatarImage').src = e.target.value;
 });
+</script>
 
+
+
+
+<script>
 function resetMemory() {
   if (confirm("Are you sure you want to reset memory?")) {
     memory.fragments = [];
     memory.mood = "neutral";
     memory.history = [];
     document.getElementById('memoryMood').textContent = "neutral";
-    document.getElementById('memoryFragments').innerHTML = '<li>None</li>';
+    document.getElementById('memoryFragments').innerHTML = '<ul><li>None</li></ul>';
     document.getElementById('historyLog').innerHTML = '<p>Cleared</p>';
   }
 }
@@ -377,7 +392,7 @@ function loadMemoryPanel() {
   const fragList = document.getElementById('memoryFragments');
   fragList.innerHTML = '';
   if (memory.fragments.length === 0) {
-    fragList.innerHTML = '<li>None</li>';
+    fragList.innerHTML = '<ul><li>None</li></ul>';
   } else {
     memory.fragments.forEach(f => {
       const li = document.createElement('li');
@@ -444,145 +459,37 @@ function resetMood() {
 function clearFragments() {
   memory.fragments = [];
   alert("All fragments cleared.");
-}
-function addCalendarEvent() {
-  const title = document.getElementById('eventTitle').value;
-  const time = document.getElementById('eventDate').value;
-  if (!title || !time) return alert("Fill out both fields.");
-  const li = document.createElement('li');
-  li.textContent = `${title} @ ${new Date(time).toLocaleString()}`;
-  document.getElementById('eventList').appendChild(li);
-  document.getElementById('eventTitle').value = '';
-  document.getElementById('eventDate').value = '';
-}
-
-function loadFiles() {
-  const files = document.getElementById('fileUploader').files;
-  const list = document.getElementById('fileList');
-  list.innerHTML = '';
-  if (!files.length) return list.innerHTML = '<li>No files loaded</li>';
-  Array.from(files).forEach(file => {
-    const li = document.createElement('li');
-    li.textContent = file.name;
-    list.appendChild(li);
-  });
-}
-
-function runSearch() {
-  const query = document.getElementById('searchQuery').value.toLowerCase();
-  const results = document.getElementById('searchResults');
-  results.innerHTML = '';
-  if (!query || !memory.history) return results.innerHTML = '<li>No results</li>';
-  const hits = memory.history.filter(pair => pair.user.toLowerCase().includes(query) || pair.bot.toLowerCase().includes(query));
-  if (!hits.length) return results.innerHTML = '<li>No results</li>';
-  hits.forEach(hit => {
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>You:</strong> ${hit.user}<br><strong>Bot:</strong> ${hit.bot}`;
-    results.appendChild(li);
-  });
-}
-function updateMemoryAnalysis() {
-  if (typeof analyzeMemoryPatterns !== 'function') return;
-  const analysis = analyzeMemoryPatterns();
-  const summaryDiv = document.createElement('div');
-  summaryDiv.innerHTML = `<br><strong>Analysis:</strong><br><pre style="white-space:pre-wrap;font-size:12px">${analysis}</pre>`;
-  const memPanel = document.getElementById('subpanel-memory');
-  const existing = memPanel.querySelector('pre');
-  if (existing) existing.remove();
-  memPanel.appendChild(summaryDiv);
-}
-
-
-
-function addHistory(user, bot) {
-  const entry = { user, bot, time: Date.now() };
-  memory.history.push(entry);
-}
-
-function learn(fragment) {
-  memory.fragments.push({ tag: 'General', content: fragment });
-}
-
-function clearFragments() {
-  memory.fragments = [];
-  alert("All fragments cleared.");
   loadMemoryPanel();
+}
+
+</script>
 <script type="module" src="main.js"></script>
 <script>
-  const expandBtn = document.getElementById('expandChatBtn');
-  const chatBox = document.getElementById('chatBox');
-  const sendBtn = document.getElementById('sendBtn');
-  const speakBtn = document.getElementById('speakBtn');
-  const inputField = document.getElementById('userInput');
+document.addEventListener("DOMContentLoaded", () => {
+  const sendBtn = document.getElementById("sendBtn");
+  const speakBtn = document.getElementById("speakBtn");
+  const inputField = document.getElementById("userInput");
+  const chatBox = document.getElementById("chatBox");
 
-    function togglePanel() {
-      document.getElementById('functionPanel').classList.toggle('hidden');
-    }
+  function addMessage(sender, message) {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = sender === "user" ? "user-message" : "bot-message";
+    msgDiv.innerText = message;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-    function showSubpanel(key) {
-      const panels = document.querySelectorAll('.subpanel');
-      panels.forEach(p => p.style.display = 'none');
-      document.getElementById(`subpanel-${key}`).style.display = 'block';
-    }
-
-    function addMessage(sender, message) {
-      const msgDiv = document.createElement("div");
-      msgDiv.className = sender === "user" ? "user-message" : "bot-message";
-      msgDiv.innerText = message;
-      chatBox.appendChild(msgDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    sendBtn.addEventListener("click", () => {
-      const input = inputField.value;
-      if (!input) return;
-      addMessage("user", input);
-      inputField.value = "";
-      const reply = respondLocally(input);
+  sendBtn?.addEventListener("click", () => {
+    const input = inputField.value;
+    if (!input) return;
+    addMessage("user", input);
+    inputField.value = "";
+    respondWithGPT(input).then((reply) => {
       addMessage("bot", reply);
       speakText(reply);
     });
-
-    function speakText(text) {
-      const synth = window.speechSynthesis;
-      if (!synth) return;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      synth.speak(utterance);
-    }
-
-    try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = "en-US";
-
-      speakBtn.addEventListener("click", () => recognition.start());
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        addMessage("user", transcript);
-        const reply = respondLocally(transcript);
-        addMessage("bot", reply);
-        speakText(reply);
-      };
-    } catch (e) {
-      speakBtn.style.display = "none";
-    }
-
-    expandBtn.addEventListener('click', () => {
-      if (chatBox.classList.contains('expanded')) {
-        chatBox.classList.remove('expanded');
-        chatBox.style.height = '40px';
-        expandBtn.textContent = '🔍';
-      } else {
-        chatBox.classList.add('expanded');
-        chatBox.style.height = '300px';
-        expandBtn.textContent = '↩️';
-      }
-    });
-  </d>
-  <script type="module" src="main.js"><d>
+  });
+});
+</script>
 </body>
  </html>
