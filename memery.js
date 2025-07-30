@@ -31,16 +31,15 @@ function runSearch() {
   if (results.length === 0) {
     addMessage("bot", "Nothing in memory matches that query.");
   } else {
-    const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join("
-");
+    const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join('
+');
     addMessage("bot", summary);
   }
 }
 function loadFiles() {
   const codexKeys = Object.keys(memory.codex || {}).join(", ") || "none";
   const rituals = Object.keys(memory.rituals || {}).join(", ") || "none";
-  addMessage("bot", 'Codex keys: ' + codexKeys + '
-Rituals: ' + rituals);
+  addMessage("bot", 'Codex keys: ' + codexKeys + '\nRituals: ' + rituals);
 }
 function addCalendarEvent() {
   const now = new Date().toLocaleString();
@@ -291,7 +290,7 @@ function renderMarkdownText(text) {
 if (window.marked) {
 return window.marked.parse(text);
 }
-return <pre>${text}</pre>;
+return '<pre>' + text + '</pre>';
 }
 
 function embedAPIKey(token) {
@@ -308,7 +307,7 @@ return "[Response Neutralized] " + response;
 }
 
 function diagnosticsPulse() {
-const stamp = Pulse ${Date.now()};
+const stamp = 'Pulse ' + Date.now();
 console.log("[Diagnostics]", stamp);
 memory.lastPulse = stamp;
 }
