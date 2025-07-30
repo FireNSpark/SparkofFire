@@ -113,8 +113,8 @@
     }
     #avatarImage {
       margin-top: 20px;
-      width: 800px;
-      height: 1000px;
+      width: 600px;
+      height: 600px;
       background-color: #333;
       border-radius: 50%;
       box-shadow: 0 0 15px #0ff;
@@ -165,6 +165,21 @@
 </style>
 </head>
 <body>
+<script>
+  function togglePanel() {
+    const panel = document.getElementById('functionPanel');
+    if (!panel) return;
+    panel.classList.toggle('hidden');
+  }
+</script>
+</body>
+</html>
+  <div id="sidebar">
+    <button class="function-btn" onclick="togglePanel()">⚙️</button>
+    <div id="functionPanel" class="hidden">
+      <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
+      <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
+      <button class="function-btn" title
   <div id="sidebar">
     <button class="function-btn" onclick="togglePanel()">⚙️</button>
     <div id="functionPanel" class="hidden">
@@ -181,7 +196,7 @@
   </div>
 
   <div id="main">
-   <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar">
+    <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar">
     <div id="chatBox"></div>
     <button id="expandChatBtn" style="font-size: 10px; padding: 2px 6px; margin-top: 4px;">🔍</button>
     <div id="controls">
