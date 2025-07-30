@@ -173,16 +173,7 @@
     panel.classList.toggle('hidden');
   }
 </script>
-  <div id="sidebar"> 
-</body>
-</html>
-     <button class="function-btn" onclick="togglePanel()">⚙️</button>
-    <div id="functionPanel" class="hidden">
-      <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
-      <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
-      <button class="function-btn" title
-  <div id="sidebar">
-    <button class="function-btn" onclick="togglePanel()">⚙️</button>
+  <button class="function-btn" onclick="togglePanel()">⚙️</button>
     <div id="functionPanel" class="hidden">
       <button class="function-btn" title="Chat" onclick="showSubpanel('chat')">💬</button>
       <button class="function-btn" title="Memory" onclick="showSubpanel('memory')">🧠</button>
@@ -199,7 +190,7 @@
   <div id="main">
     <img id="avatarImage" src="images/cartoonpersona.png" alt="Avatar">
     <div id="chatBox"></div>
-    <!-- Removed expand button that was appearing as a small window -->
+
     <div id="controls">
       <input type="text" id="userInput" placeholder="Say something...">
       <button id="sendBtn">Send</button>
@@ -517,8 +508,7 @@ function clearFragments() {
   memory.fragments = [];
   alert("All fragments cleared.");
   loadMemoryPanel();
-</d>
-<script type="module" src="main.js"></d>
+<script type="module" src="main.js"></script>
 <script>
   const expandBtn = document.getElementById('expandChatBtn');
   const chatBox = document.getElementById('chatBox');
