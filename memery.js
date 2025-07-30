@@ -31,8 +31,7 @@ function runSearch() {
   if (results.length === 0) {
     addMessage("bot", "Nothing in memory matches that query.");
   } else {
-    const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join('
-');
+    const summary = results.map(r => '🧠 ' + r.user + ' → ' + r.bot).join('\n');
     addMessage("bot", summary);
   }
 }
@@ -51,7 +50,7 @@ function mapDimension() {
   const current = memory.dimension;
   const next = dimensions[(dimensions.indexOf(current) + 1) % dimensions.length];
   memory.dimension = next;
-  addMessage("bot", `🌐 Switched to dimension: ${next}`);
+  addMessage("bot", '🌐 Switched to dimension: ' + next);
 }
 function lockPersonality() {
   memory.tone = "locked";
