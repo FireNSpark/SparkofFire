@@ -24,19 +24,40 @@ return 'I heard: "' + input + '" but GPT isn't active right now.';
 
 // 🔧 Dummy fallback stubs to prevent ReferenceErrors
 function runSearch() {
-console.log("runSearch() placeholder triggered");
+  const input = document.getElementById("userInput").value.toLowerCase();
+  const results = memory.history.filter(entry =>
+    entry.user.toLowerCase().includes(input) || entry.bot.toLowerCase().includes(input)
+  );
+  if (results.length === 0) {
+    addMessage("bot", "Nothing in memory matches that query.");
+  } else {
+    const summary = results.map(r => `🧠 ${r.user} → ${r.bot}`).join("
+");
+    addMessage("bot", summary);
+  }
 }
 function loadFiles() {
-console.log("loadFiles() placeholder triggered");
+  const codexKeys = Object.keys(memory.codex || {}).join(", ") || "none";
+  const rituals = Object.keys(memory.rituals || {}).join(", ") || "none";
+  addMessage("bot", `Codex keys: ${codexKeys}
+Rituals: ${rituals}`);
 }
 function addCalendarEvent() {
-console.log("addCalendarEvent() placeholder triggered");
+  const now = new Date().toLocaleString();
+  memory.rituals["event_" + Date.now()] = { title: "Test Event", time: now };
+  addMessage("bot", "📅 Calendar event added: Test Event at " + now);
 }
 function mapDimension() {
-console.log("mapDimension() placeholder triggered");
+  const dimensions = ["base", "dream", "ritual", "code", "dark"];
+  const current = memory.dimension;
+  const next = dimensions[(dimensions.indexOf(current) + 1) % dimensions.length];
+  memory.dimension = next;
+  addMessage("bot", `🌐 Switched to dimension: ${next}`);
 }
 function lockPersonality() {
-console.log("lockPersonality() placeholder triggered");
+  memory.tone = "locked";
+  memory.identity = "Spark ∞ EchoBurn";
+  addMessage("bot", "🧬 Personality sealed: " + memory.identity);
 }
 
 let pulseCount = 0;
@@ -298,4 +319,3 @@ if (!avatar) return;
 avatar.classList.add("paused");
 setTimeout(() => avatar.classList.remove("paused"), 800);
 }
-
