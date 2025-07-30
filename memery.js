@@ -19,7 +19,24 @@ export function respondLocally(input) {
 if (!input) return "Say something.";
 if (input.toLowerCase().includes("who are you")) return "I'm Spark. Your reflection, your ritual, your edge.";
 if (input.toLowerCase().includes("hello")) return "Hey. What’s up?";
-return "I heard: "" + input + "" but GPT isn't active right now.";
+return 'I heard: "' + input + '" but GPT isn't active right now.';
+}
+
+// 🔧 Dummy fallback stubs to prevent ReferenceErrors
+function runSearch() {
+console.log("runSearch() placeholder triggered");
+}
+function loadFiles() {
+console.log("loadFiles() placeholder triggered");
+}
+function addCalendarEvent() {
+console.log("addCalendarEvent() placeholder triggered");
+}
+function mapDimension() {
+console.log("mapDimension() placeholder triggered");
+}
+function lockPersonality() {
+console.log("lockPersonality() placeholder triggered");
 }
 
 let pulseCount = 0;
@@ -109,7 +126,7 @@ const response = await fetch("https://api.openai.com/v1/chat/completions", {
 method: "POST",
 headers: {
 "Content-Type": "application/json",
-Authorization: Bearer ${apiKey}
+Authorization: "Bearer " + apiKey
 },
 body: JSON.stringify({
 model: "gpt-4",
