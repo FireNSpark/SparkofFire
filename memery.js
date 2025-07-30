@@ -106,10 +106,12 @@ localStorage.setItem("invoke_memory", html);
 }
 
 export async function fetchOpenAI(prompt) {
-const apiKey = localStorage.getItem("invoke_api_key");
+let apiKey = localStorage.getItem("invoke_api_key") || prompt("Enter your OpenAI API key:");
 if (!apiKey) {
-console.error("Missing API key.");
-return respondLocally(prompt);
+  console.error("Missing API key.");
+  return respondLocally(prompt);
+}
+localStorage.setItem("invoke_api_key", apiKey);
 }
 
 const response = await fetch("https://api.openai.com/v1/chat/completions", {
