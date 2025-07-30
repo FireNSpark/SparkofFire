@@ -159,12 +159,9 @@
     }
 
     #chatBox {
-
-      width: 90%;
-
-      max-width: 500px;
-
-      height: 40px;
+width: 90%;
+max-width: 500px;
+height: 300px;
 
       overflow-y: auto;
 
@@ -939,19 +936,9 @@ function clearFragments() {
 
 </script>
 
-<script type="module" src="main.js"></script>
+<script type="module" src="main.js">
 
 <script>
-function respondWithGPT(input) {
-return Promise.resolve("I heard: '" + input + "' but GPT is not connected yet.");
-}
-
-function speakText(text) {
-const utterance = new SpeechSynthesisUtterance(text);
-utterance.lang = "en-US";
-speechSynthesis.speak(utterance);
-}
-
 document.addEventListener("DOMContentLoaded", () => {
 const speakBtn = document.getElementById("speakBtn");
 
